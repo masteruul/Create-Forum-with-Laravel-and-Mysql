@@ -1,3 +1,4 @@
+import Vue from 'vue';
 
 window._ = require('lodash');
 
@@ -53,3 +54,9 @@ if (token) {
 //     cluster: 'mt1',
 //     encrypted: true
 // });
+
+window.events = new Vue();
+
+window.flash = function (message){
+    window.events.$emit('flash',message);
+};
