@@ -1,5 +1,5 @@
 <template>
-    <div class="alert alert-success alert-flash" role="alert" vshow="show">
+    <div class="alert alert-success alert-flash" role="alert" v-show="show">
         <strong>Succes!</strong>{{body}}
     </div>
 </template>
@@ -7,6 +7,7 @@
 <script>
     export default {
         props:['message'],
+
         data(){
             return{
                 body: this.message,
@@ -25,7 +26,7 @@
 
         },
 
-        methos:{
+        methods:{
             flash(message){
                 this.body = message;
                 this.show = true;
@@ -36,7 +37,7 @@
             hide(){
                 setTimeout(()=>{
                     this.show = false;
-                },2500);
+                }, 2000);
             }
         }
 
