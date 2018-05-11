@@ -95,4 +95,32 @@ class ReadThreadsTest extends TestCase
         $response = $this->getJson($thread->path().'/replies')->json();
         $this->assertCount(2,$response['data']);
     }
+
+    /** @test */
+    function a_thread_can_be_subscribe_to()
+    {
+        $thread = create('App\Thread');
+
+        //$this->signIn();
+
+        $thread->subscribe($userId = 1);
+
+        $this->assertEquals(
+            1,
+            $thread->subscriptions()->where('user_id',$userId)->count()
+        );
+    }
+
+    /** @test */
+    function a_thread_can_be_unsubscribe_to()
+    {
+        $thread = create('App\Thread');
+
+        $thread->subscribe($userId=1);
+
+        $thread->unsubscribe($userId);
+
+        $this->assertCount(0,$thread->subscriptions);
+    }
+
 }
