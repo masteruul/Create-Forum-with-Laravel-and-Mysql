@@ -107,4 +107,23 @@ class ParticipateInForumTest extends TestCase
         $this->assertDatabaseHas('replies', ['id' => $reply->id, 'body' => $updatedReply]);
     }
     
+    /** @test */
+    function replies_that_contain_span_may_not_be_creator()
+    {
+        //given we have auntitaced user
+        $this->signIn();
+
+        //and exitsting thread
+        $thread = create('App\Thread');
+        
+        //when the user add reply to thread
+        $reply=make('App\Reply',[
+            'body'=>'Yahoo Customer Support'
+        ]);
+
+        $this->expectException(\Exception::class);
+
+        $this->post($thread->path().'/replies', $reply->toArray());
+        
+    }
 }

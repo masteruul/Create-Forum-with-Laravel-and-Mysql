@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use App\ThreadSubcriptions;
 use App\Notifications\ThreadWasUpdated;
+use App\Events\Event\ThreadHasNewReply;
 class Thread extends Model
 {
     use RecordsActivity;
@@ -45,19 +46,18 @@ class Thread extends Model
     {
       $reply= $this->replies()->create($reply);
       
-      //prepare notification to all subscriber
-      $this->subscriptions
-        ->filter(function ($sub)use($reply){
-          return $sub->user_id != $reply->user_id;
-        })
-        ->each->notify($reply);
-        //->each(function ($sub)use($reply){
-        //});        
-        
-      
+      $this->notifySubscribers($reply);
+
       return $reply;
     }
 
+    public function notifySubscribers($reply)
+    {
+      $this->subscriptions
+        ->where('user_id','!=',$reply->user_id)
+        ->each
+        ->notify($reply);
+    }
     public function channel(){
       return $this->belongsTo(Channel::class);
     }
@@ -101,5 +101,11 @@ class Thread extends Model
       return $this->subscriptions()
         ->where('user_id',auth()->id())
         ->exists();
+    }
+
+    public function hasUpdatesFor($user)
+    {
+      $key= $user->visitedThreadCacheKey($this);      
+      return $this->updated_at > cache($key);
     }
 }
