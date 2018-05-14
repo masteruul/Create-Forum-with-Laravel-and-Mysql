@@ -37,9 +37,10 @@ Route::delete('/threads/{channel}/{thread}/subscriptions','ThreadSubscriptionsCo
 Route::post('/replies/{reply}/favorites','FavoritesController@store');
 Route::delete('/replies/{reply}/favorites','FavoritesController@destroy');
 
-//profile
+//
 Route::get('/profiles/{user}','ProfilesController@show')->name('profile');
 Route::get('/profiles/{user}/notifications','UserNotificationsController@index');
 Route::delete('/profiles/{user}/notifications/{notifications}','UserNotificationsController@destroy');
 
 Route::get('api/users', 'Api\UsersController@index');
+Route::post('api/users/{user}/avatar','Api\UserAvatarController@store')->middleware('auth')->name('avatar');
