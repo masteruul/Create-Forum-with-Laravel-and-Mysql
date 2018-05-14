@@ -5,6 +5,7 @@ namespace App;
 use App\Filters\ThreadFilters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Redis; 
 use App\ThreadSubcriptions;
 use App\Notifications\ThreadWasUpdated;
 use App\Events\Event\ThreadHasNewReply;
@@ -14,7 +15,7 @@ use App\Events\Event\ThreadReceviedNewReply;
 
 class Thread extends Model
 {
-    use RecordsActivity;
+    use RecordsActivity,RecordsVisits;
     protected $guarded = [];
     protected $with = ['creator','channel'];
     protected $appends = ['isSubscribedTo'];
@@ -54,15 +55,6 @@ class Thread extends Model
       
       return $reply;
     }
-
-
-    //public function notifySubscribers($reply)
-    //{
-    //  $this->subscriptions
-    //    ->where('user_id','!=',$reply->user_id)
-    //    ->each
-    //    ->notify($reply);
-    // }
 
     public function channel(){
       return $this->belongsTo(Channel::class);
