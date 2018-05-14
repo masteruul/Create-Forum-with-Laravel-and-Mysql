@@ -54,8 +54,6 @@ class ThreadsController extends Controller
             'channel_id'=>'required|exists:channels,id'
         ]);
 
-        $spam->detect(request('body'));
-
         $thread = Thread::create([
             'user_id'=>auth()->id(),
             'channel_id'=>request('channel_id'),

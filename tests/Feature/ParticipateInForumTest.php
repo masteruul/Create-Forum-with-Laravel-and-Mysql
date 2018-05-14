@@ -40,8 +40,8 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     function a_reply_requires_a_body()
     {
-        $this->withExceptionHandling()->signIn();
-        
+        //$this->withExceptionHandling()->signIn();
+        $this->expectException(\Exception::class); 
         $thread = create('App\Thread');
         
         //when the user add reply to thread
@@ -108,8 +108,9 @@ class ParticipateInForumTest extends TestCase
     }
     
     /** @test */
-    function replies_that_contain_span_may_not_be_creator()
+    function replies_that_contain_span_may_not_be_created()
     {
+        $this->withExceptionHandling();
         //given we have auntitaced user
         $this->signIn();
 
@@ -121,9 +122,28 @@ class ParticipateInForumTest extends TestCase
             'body'=>'Yahoo Customer Support'
         ]);
 
-        $this->expectException(\Exception::class);
+        $this->json('post',$thread->path().'/replies', $reply->toArray())
+            ->assertStatus(422);
+        
+    }
 
-        $this->post($thread->path().'/replies', $reply->toArray());
+    /** @test */
+    function users_may_only_reply_a_maximum_of_once_per_minute()
+    {
+        //given we have auntitaced user
+        $this->withExceptionHandling();
+        $this->signIn();
+
+        //and exitsting thread
+        $thread = create('App\Thread');
+
+        //when the user add reply to thread
+        $reply=make('App\Reply');
+
+        $this->post($thread->path().'/replies', $reply->toArray())
+            ->assertStatus(200);
+        $this->post($thread->path().'/replies', $reply->toArray())
+            ->assertStatus(429);
         
     }
 }

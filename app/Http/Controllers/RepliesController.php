@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Reply;
 use App\Thread;
-use Illuminate\Http\Request;
+use App\Http\Requests\CreatePostRequest;
+use App\Notifications\YouWereMentioned;
 
 class RepliesController extends Controller
 {
@@ -20,7 +22,7 @@ class RepliesController extends Controller
      */
     public function index($channelId, Thread $thread)
     {
-        return $thread->replies()->paginate(2);
+        return $thread->replies()->paginate(10);
     }
 
     /**
@@ -39,23 +41,26 @@ class RepliesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($channelId,Thread $thread)
+    public function store($channelId,Thread $thread, CreatePostRequest $form)
     {
-        try{
-            $this->$this->validate(request(),['body' => 'required|spamfree']);
-
-            $reply = $thread->addReply([
+        $reply=$thread->addReply([
                 'body'=>request('body'),
                 'user_id'=>auth()->id()
-            ]);        
-
-        }catch(\Exception $e){
-            return response(
-                'Sorry, your reply could not be saved at this time.',422
-            );
-        }
+            ]);
         
-        return $reply->load('owner');
+        //inspect the body of the reply for username mentions
+        preg_match_all('/\@([^\s\.]+)/',$reply->body,$matches); 
+        
+        $names = $matches[1];
+        //and then for each mentioned user, notify them
+        foreach($names as $name){
+            $user = User::whereName($name)->first();
+
+            if($user){
+                $user->notify(new YouWereMentioned($reply));
+            }
+        }
+        $reply->load('owner');
     }
 
     /**
@@ -91,7 +96,7 @@ class RepliesController extends Controller
     {   
         $this->authorize('update',$reply);
         try{
-            $this->$this->validate(request(),['body' => 'required|spamfree']);
+            $this->validate(request(),['body' => 'required|spamfree']);
             $reply->update(request(['body']));
         }catch(\Exception $e){
             return response(
