@@ -43,24 +43,11 @@ class RepliesController extends Controller
      */
     public function store($channelId,Thread $thread, CreatePostRequest $form)
     {
-        $reply=$thread->addReply([
+        //bermasalah?
+        return $thread->addReply([
                 'body'=>request('body'),
                 'user_id'=>auth()->id()
-            ]);
-        
-        //inspect the body of the reply for username mentions
-        preg_match_all('/\@([^\s\.]+)/',$reply->body,$matches); 
-        
-        $names = $matches[1];
-        //and then for each mentioned user, notify them
-        foreach($names as $name){
-            $user = User::whereName($name)->first();
-
-            if($user){
-                $user->notify(new YouWereMentioned($reply));
-            }
-        }
-        $reply->load('owner');
+            ])->load('owner');
     }
 
     /**
@@ -95,14 +82,9 @@ class RepliesController extends Controller
     public function update(Reply $reply)
     {   
         $this->authorize('update',$reply);
-        try{
-            $this->validate(request(),['body' => 'required|spamfree']);
-            $reply->update(request(['body']));
-        }catch(\Exception $e){
-            return response(
-                'Sorry, your reply could not be saved at this time.',422
-            );
-        }
+        $this->validate(request(),['body' => 'required|spamfree']);
+        $reply->update(request(['body']));
+        
     }
 
     /**
