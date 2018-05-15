@@ -106,8 +106,7 @@ class ThreadTest extends TestCase
         });
         
     }
-
-    /** @test */
+    //for redis visits count
     function a_thread_records_each_visit()
     {
         $thread = make('App\Thread',['id'=>1]);
@@ -123,5 +122,17 @@ class ThreadTest extends TestCase
         $thread->visits()->record();
 
         $this->assertEquals(2,$thread->visits()->count());       
+    }
+
+    /** @test */
+    function we_record_a_new_visit_each_time_the_thread_is_read()
+    {
+        $thread = create('App\Thread');
+
+        $this->assertSame(0,$thread->visits);
+
+        $this->call('GET',$thread->path());
+
+        $this->assertEquals(1,$thread->fresh()->visits);
     }
 }
