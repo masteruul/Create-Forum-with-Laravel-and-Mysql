@@ -1,6 +1,6 @@
 <template>
     <div :id="'reply-'+id" class="col-md-8 col-md-offset-2"> 
-        <div class="panel panel-default">
+        <div class="panel" :class="isBest ? 'panel-success':'panel-default'">
             <div class="panel-heading">
                 <div class="level">
                     <h5 class="flex">
@@ -31,10 +31,12 @@
                 </div>
                 <div v-else v-html="body"></div>
             </div>
-
-            <div class="panel-footer level" v-if="canUpdate">
-                <button class="btn btn-xs mr-1" @click="editing = true">Edit</button>
-                <button class="btn btn-xs btn-danger mr-1" @click="destroy">Delete</button>
+            <div  class="panel-footer level" >
+                <div v-if="authorize('updateReply', reply)">
+                    <button class="btn btn-xs mr-1" @click="editing = true">Edit</button>
+                    <button class="btn btn-xs btn-danger mr-1" @click="destroy">Delete</button>                
+                </div>
+                <button class="btn btn-xs btn-default ml-a" @click="markBestReply" v-show="! isBest">Mark Best Reply?</button>                
             </div>
         </div>
     </div>
@@ -42,35 +44,31 @@
 
 <script>
     import Favorite from './Favorite.vue';
-    import NewReply from './NewReply.vue';
     import moment from 'moment';
 
     export default{
         props:['data'],
 
-        components:{Favorite,NewReply},
+        components:{Favorite},
 
         data(){
             return{
                 editing:false,
                 id: this.data.id,
-                body: this.data.body
+                body: this.data.body,
+                reply: this.data,
+                thread: window.thread
             };
         },
 
         computed:{
+            isBest(){
+                return this.thread.best_reply_id == this.id;
+            },
+
             ago(){
                 return moment(this.data.created_at).fromNow();
 
-            },
-
-            signedIn(){
-                return window.App.signedIn;
-            },
-
-            canUpdate(){
-                return this.authorize(user => this.data.user_id == user.id);
-                //return this.data.user_id == window.App.user.id;
             }
         },
 
@@ -94,10 +92,13 @@
                 axios.delete('/replies/'+this.data.id);
 
                 this.$emit('deleted',this.data.id);
-                //$(this.$el).fadeOut(300,()=>{
-                //   flash('Your Reply has been Deleted...'); 
-                //});
 
+            },
+
+            markBestReply(){
+                axios.post('/replies/'+this.data.id+'/best');
+
+                this.thread.best_reply_id = this.id;
             }
 
         }
