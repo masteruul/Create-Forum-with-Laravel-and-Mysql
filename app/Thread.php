@@ -19,7 +19,7 @@ class Thread extends Model
     protected $guarded = [];
     protected $with = ['creator','channel'];
     protected $appends = ['isSubscribedTo'];
-
+    protected $casts = ['locked'=>'boolean'];
 
     protected static function boot()
     {
@@ -59,12 +59,7 @@ class Thread extends Model
       
       return $reply;
     }
-
-    public function lock()
-    {
-      $this->update(['locked'=>true]);
-    }
-
+    
     public function channel(){
       return $this->belongsTo(Channel::class);
     }
