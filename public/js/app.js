@@ -58689,6 +58689,9 @@ var user = window.App.user;
 module.exports = {
     updateReply: function updateReply(reply) {
         return reply.user_id === user.id;
+    },
+    updateThread: function updateThread(thread) {
+        return thread.user_id === user.id;
     }
 };
 
@@ -61521,50 +61524,47 @@ var render = function() {
               : _c("div", { domProps: { innerHTML: _vm._s(_vm.body) } })
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "panel-footer level" }, [
-            _vm.authorize("updateReply", _vm.reply)
-              ? _c("div", [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-xs mr-1",
-                      on: {
-                        click: function($event) {
-                          _vm.editing = true
-                        }
-                      }
-                    },
-                    [_vm._v("Edit")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-xs btn-danger mr-1",
-                      on: { click: _vm.destroy }
-                    },
-                    [_vm._v("Delete")]
-                  )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: !_vm.isBest,
-                    expression: "! isBest"
-                  }
-                ],
-                staticClass: "btn btn-xs btn-default ml-a",
-                on: { click: _vm.markBestReply }
-              },
-              [_vm._v("Mark Best Reply?")]
-            )
-          ])
+          _vm.authorize("updateReply", _vm.data) ||
+          _vm.authorize("updateThread", _vm.thread)
+            ? _c("div", { staticClass: "panel-footer level" }, [
+                _vm.authorize("updateReply", _vm.data)
+                  ? _c("div", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-xs mr-1",
+                          on: {
+                            click: function($event) {
+                              _vm.editing = true
+                            }
+                          }
+                        },
+                        [_vm._v("Edit")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-xs btn-danger mr-1",
+                          on: { click: _vm.destroy }
+                        },
+                        [_vm._v("Delete")]
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.authorize("updateThread", _vm.thread)
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-xs btn-default ml-a",
+                        on: { click: _vm.markBestReply }
+                      },
+                      [_vm._v("Mark Best Reply?")]
+                    )
+                  : _vm._e()
+              ])
+            : _vm._e()
         ]
       )
     ]

@@ -31,12 +31,12 @@
                 </div>
                 <div v-else v-html="body"></div>
             </div>
-            <div  class="panel-footer level" >
-                <div v-if="authorize('updateReply', reply)">
+            <div  class="panel-footer level" v-if="authorize('updateReply', data) || authorize('updateThread',thread)">
+                <div v-if="authorize('updateReply', data)">
                     <button class="btn btn-xs mr-1" @click="editing = true">Edit</button>
                     <button class="btn btn-xs btn-danger mr-1" @click="destroy">Delete</button>                
                 </div>
-                <button class="btn btn-xs btn-default ml-a" @click="markBestReply" v-show="! isBest">Mark Best Reply?</button>                
+                <button class="btn btn-xs btn-default ml-a" @click="markBestReply" v-if="authorize('updateThread',thread)">Mark Best Reply?</button>                
             </div>
         </div>
     </div>
