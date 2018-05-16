@@ -7,6 +7,10 @@ module.exports={
 
     updateThread(thread){
         return thread.user_id === user.id
+    },
+
+    isAdmin(){
+        return ['masteruul'].includes(user.name);
     }
 };
 
