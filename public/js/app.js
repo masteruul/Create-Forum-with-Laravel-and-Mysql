@@ -60769,16 +60769,43 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             repliesCount: this.thread.replies_Count,
-            locked: this.thread.locked
+            locked: this.thread.locked,
+            editing: false,
+            title: this.thread.title,
+            body: this.thread.body,
+            form: {}
         };
+    },
+    created: function created() {
+        this.resetForm();
     },
 
 
     methods: {
         toggleLock: function toggleLock() {
-            axios[this.locked ? 'delete' : 'post']('/locked-threads/' + this.thread.slug);
+            var uri = '/locked-thread/' + this.thread.slug;
+            axios[this.locked ? 'delete' : 'post'](uri);
 
             this.locked = !this.locked;
+        },
+        update: function update() {
+            var _this = this;
+
+            var uri = '/threads/' + this.thread.channel.slug + '/' + this.thread.slug;
+            axios.patch('/threads/' + this.thread.channel.slug + '/' + this.thread.slug, {
+                title: this.title,
+                body: this.body
+            }).then(function () {
+                _this.editing = false, flash('Your thread has been updated.');
+            });
+        },
+        resetForm: function resetForm() {
+            this.form = {
+                title: this.thread.title,
+                body: this.thread.body
+            };
+
+            this.editing = false;
         }
     }
 });
