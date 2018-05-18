@@ -8,8 +8,9 @@
 
         <div class="panel-body">
             <div class="form-group">
-                <textarea class="form-control" rows="10" v-model="form.body">
-                </textarea>                
+                <wysiwyg name="form.body"></wysiwyg>
+                {{--<textarea class="form-control" rows="10" v-model="form.body">
+                </textarea>--}}                
             </div>
         </div>
 
@@ -44,7 +45,7 @@
             </div>
         </div>
 
-        <div class="panel-body" v-text="form.body">
+        <div class="panel-body" v-html="form.body">
         </div>
 
         <div class="panel-footer">
