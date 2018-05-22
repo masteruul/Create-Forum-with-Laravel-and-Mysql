@@ -3,12 +3,13 @@
         <div class="row col-md-8 col-md-offset-2" >
             <div class="" v-if="signedIn">
                     <div class="form-group">
-                        <textarea name="body" 
+                        <wysiwyg name="body" v-model="body" placeholder="Have Something to say?" :shouldClear="completed"></wysiwyg>
+                        <!--textarea name="body" 
                                 id="body" class="form-control" 
                                 placeholder="Have something to say?" 
                                 rows="5"
                                 required
-                                v-model="body"></textarea>
+                                v-model="body"></textarea-->
                     </div>
                     <button type="submit" 
                             class="btn btn-default"
@@ -31,7 +32,8 @@
     export default{
         data(){
             return{
-                body:''
+                body:'',
+                completed:false
             };
         },
 
@@ -57,10 +59,11 @@
                     })
                     .then(({data})=>{
                         this.body='';
-
+                        this.completed = true;
                         flash('your Replies has been posted..');
 
                         this.$emit('created',data);
+
                     });
             }
         }

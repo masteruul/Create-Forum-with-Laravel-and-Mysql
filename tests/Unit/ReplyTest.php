@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Carbon\Carbon;
+use Stevebauman\Purify\PurifyServiceProvider;
 
 
 class ReplyTest extends TestCase
@@ -62,5 +63,14 @@ class ReplyTest extends TestCase
         $reply->thread->update(['best_reply_id'=>$reply->id]);
 
         $this->assertTrue($reply->fresh()->isBest());
+    }
+
+
+    /** @test */
+    function a_reply_body_is_sanitized_automatically()
+    {
+        $reply = make('App\Reply',['body'=>'<script>alert("bad")</script>']);
+
+        $this->assertEmpty($reply->body);
     }
 }

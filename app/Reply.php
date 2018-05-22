@@ -4,7 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-
+use Stevebauman\Purify\PurifyServiceProvider;
 class Reply extends Model
 {
     use Favoritable,RecordsActivity;
@@ -66,5 +66,15 @@ class Reply extends Model
     {
         return $this->thread->best_reply_id == $this->id;
         //return false;
+    }
+
+    public function getIsBestAttribute()
+    {
+        return $this->isBest();
+    }
+
+    public function getBodyAttribute($body)
+    {
+        return \Purify::clean($body);
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Redis; 
 use App\Notifications\ThreadWasUpdated;
+use App\Thread;
 
 class ThreadTest extends TestCase
 {
@@ -134,5 +135,13 @@ class ThreadTest extends TestCase
         $this->call('GET',$thread->path());
 
         $this->assertEquals(1,$thread->fresh()->visits);
+    }
+
+    /** @test */
+    function a_threads_body_is_sanitized_automatically()
+    {
+        $thread = make('App\Thread',['body'=>'<script>alert("bad")</script>']);
+
+        $this->assertEmpty($thread->body);
     }
 }

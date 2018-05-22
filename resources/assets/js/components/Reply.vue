@@ -21,7 +21,7 @@
                 <div v-if="editing">
                     <form @submit="update">
                         <div class="form-group">
-                        <textarea class="form-control" v-model="body" required></textarea>                                  
+                            <wysiwyg v-model="body"></wysiwyg>
                         </div>
 
                         <button class="btn btn-xs btn-primary">Update</button>
@@ -33,7 +33,7 @@
             </div>
             <div  class="panel-footer level" v-if="authorize('updateReply', data) || authorize('updateThread',thread)">
                 <div v-if="authorize('updateReply', data)">
-                    <button class="btn btn-xs mr-1" @click="editing = true">Edit</button>
+                    <button class="btn btn-xs mr-1" @click="editing = true" v-if="! editing">Edit</button>
                     <button class="btn btn-xs btn-danger mr-1" @click="destroy">Delete</button>                
                 </div>
                 <button class="btn btn-xs btn-default ml-a" @click="markBestReply" v-if="authorize('updateThread',thread)">Mark Best Reply?</button>                

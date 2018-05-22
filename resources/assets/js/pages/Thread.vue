@@ -14,8 +14,7 @@
                 editing:false,
                 title: this.thread.title,
                 body: this.thread.body,
-                form:{
-                }
+                form:{}
             };
         },
 

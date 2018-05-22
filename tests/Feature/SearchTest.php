@@ -22,7 +22,7 @@ class SearchTest extends TestCase
 
         $results = $this->getJson("/threads/search?1={$search}")->json();
         //result should be different depend on search index.
-        $this->assertCount(2,$results['data']);
+        $this->assertCount(1,$results['data']);
         
         $desiredSearch->unsearchable();
     } 

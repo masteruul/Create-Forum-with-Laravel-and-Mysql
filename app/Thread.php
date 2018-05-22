@@ -11,6 +11,7 @@ use App\Notifications\ThreadWasUpdated;
 use App\Events\Event\ThreadHasNewReply;
 use App\Events\Event\ThreadReceviedNewReply;
 use Laravel\Scout\Searchable;
+use Stevebauman\Purify\PurifyServiceProvider;
 
 
 class Thread extends Model
@@ -133,5 +134,10 @@ class Thread extends Model
     public function toSearchableArray()
     {
       return $this->toArray()+['path'=>$this->path()];
+    }
+
+    public function getBodyAttribute($body)
+    {
+      return \Purify::clean($body);
     }
 }

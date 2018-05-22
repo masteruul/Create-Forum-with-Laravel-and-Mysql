@@ -6,7 +6,7 @@ export default{
     },
     methods:{
         add(items){
-            this.items.push(item);
+            this.items.push(items);
      
             this.$emit('added');
         },            
