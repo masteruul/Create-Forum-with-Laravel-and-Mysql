@@ -5,7 +5,7 @@
 <script>
     export default {
         methods:{
-            onChange(){
+            onChange(e){
                  if(! e.target.files.length) return;
 
                 let file = e.target.files[0];

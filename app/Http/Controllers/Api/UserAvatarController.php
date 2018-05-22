@@ -11,9 +11,10 @@ class UserAvatarController extends Controller
         request()->validate([
             'avatar'=>['required','image']
         ]);
-
+        
+        $storage = '/storage/';
         auth()->user()->update([
-            'avatar_path' => request()->file('avatar')->store('avatars','public')
+            'avatar_path' => $storage.request()->file('avatar')->store('avatars','public')
         ]);
 
         return response([],204);

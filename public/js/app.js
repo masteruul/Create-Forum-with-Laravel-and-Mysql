@@ -83764,7 +83764,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     methods: {
-        onChange: function onChange() {
+        onChange: function onChange(e) {
             var _this = this;
 
             if (!e.target.files.length) return;
