@@ -10,13 +10,14 @@ use App\ThreadSubcriptions;
 use App\Notifications\ThreadWasUpdated;
 use App\Events\Event\ThreadHasNewReply;
 use App\Events\Event\ThreadReceviedNewReply;
-use Laravel\Scout\Searchable;
+//use Laravel\Scout\Searchable;
 use Stevebauman\Purify\PurifyServiceProvider;
 
 
 class Thread extends Model
 {
-    use RecordsActivity,Searchable;
+    //use RecordsActivity,Searchable;
+    use RecordsActivity;
     protected $guarded = [];
     protected $with = ['creator','channel'];
     protected $appends = ['isSubscribedTo'];
